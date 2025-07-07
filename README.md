@@ -29,7 +29,7 @@ This approach accelerates the initial development phase by automating repetitive
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/SpencerCooley/django-starter-ai/blob/master/README.md
+    git clone https://github.com/SpencerCooley/django-starter-ai/
     cd django-starter-ai
     ```
 ## Environment Variables
