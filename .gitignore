@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Django
+*.log
+db.sqlite3
+/media/
+/static/
+
+# Docker
+.docker/
+postgres_data/
+
+# Environment variables
+.env
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+staticfiles
