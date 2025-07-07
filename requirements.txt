@@ -10,3 +10,5 @@ whitenoise>=6.0.0,<7.0.0
 openai>=1.0.0,<2.0.0
 pydantic>=1.9.0,<2.0.0
 python-dotenv>=0.19.0,<1.0.0
+pytest>=6.2,<7.0
+pytest-django>=4.5,<4.6
