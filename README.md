@@ -30,7 +30,7 @@ This approach accelerates the initial development phase by automating repetitive
 1.  **Clone the repository:**
     ```bash
     git clone <repository-url>
-    cd django-starter-api
+    cd django-starter-ai
     ```
 ## Environment Variables
 
