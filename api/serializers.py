@@ -1,5 +1,6 @@
 
 from rest_framework import serializers
+from .models import TaskResult
 
 class JobCreateRequestSerializer(serializers.Serializer):
     """
@@ -29,3 +30,11 @@ class JobStatusResponseSerializer(serializers.Serializer):
         allow_null=True,
         help_text="The result of the task if it has completed successfully. Can be any JSON value."
     )
+
+class TaskResultSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the TaskResult model.
+    """
+    class Meta:
+        model = TaskResult
+        fields = '__all__'

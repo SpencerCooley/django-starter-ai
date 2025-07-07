@@ -1,8 +1,11 @@
 import pytest
 import time
+from unittest.mock import patch
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+from .models import TaskResult
+from .utils import save_task_result
 
 @pytest.mark.django_db
 class TestJobViewIntegration:
@@ -24,12 +27,10 @@ class TestJobViewIntegration:
         and verifying its successful completion.
         """
         # 1. Define the job and its parameters
-        task_duration = 5
         task_message = "Integration Test"
         job_data = {
-            "job_name": "api.tasks.long_running_task",
+            "job_name": "api.tasks.hello_world",
             "payload": {
-                "duration": task_duration,
                 "message": task_message
             }
         }
@@ -42,7 +43,7 @@ class TestJobViewIntegration:
 
         # 3. Poll the status endpoint until the task is complete
         start_time = time.time()
-        timeout = task_duration + 10  # Add a 10-second buffer
+        timeout = 15  # Add a 15-second buffer
         final_status = None
 
         while time.time() - start_time < timeout:
@@ -64,5 +65,24 @@ class TestJobViewIntegration:
         
         # Re-fetch the final result to be sure
         final_response = self.client.get(f"{self.job_url}?job_id={task_id}")
-        expected_result = f"Slept for {task_duration} seconds. Message: {task_message}"
+        expected_result = f"hello world {task_message}"
         assert final_response.data.get('result') == expected_result
+
+
+@pytest.mark.django_db
+@patch('api.models.TaskResult.objects.create')
+def test_save_task_result_unit(mock_create):
+    """
+    Test that save_task_result correctly calls the model's create method.
+    """
+    job_id = "test-job-123"
+    task_name = "my_test_task"
+    result = {"status": "completed", "value": 42}
+
+    save_task_result(job_id, task_name, result)
+
+    mock_create.assert_called_once_with(
+        job_id=job_id,
+        task_name=task_name,
+        result=result
+    )

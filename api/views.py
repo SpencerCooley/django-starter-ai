@@ -1,14 +1,17 @@
 
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from celery.result import AsyncResult
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from core.celery import app as celery_app
+from .models import TaskResult
 from .serializers import (
     JobCreateRequestSerializer,
     JobCreateResponseSerializer,
     JobStatusResponseSerializer,
+    TaskResultSerializer,
 )
 
 class JobView(APIView):
@@ -28,10 +31,10 @@ class JobView(APIView):
         validated_data = serializer.validated_data
 
         job_name = validated_data.get("job_name")
-        payload = validated_data.get("payload", {})
+        payload = validated_data.get("payload")
 
         try:
-            # Use kwargs to pass the payload as keyword arguments to the task
+            # Pass the payload as keyword arguments
             task = celery_app.send_task(job_name, kwargs=payload)
             response_serializer = JobCreateResponseSerializer(data={"task_id": task.id})
             response_serializer.is_valid(raise_exception=True)
@@ -80,3 +83,11 @@ class JobView(APIView):
         serializer = JobStatusResponseSerializer(data=response_data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TaskResultView(ListAPIView):
+    """
+    A read-only endpoint to list and filter saved task results.
+    """
+    queryset = TaskResult.objects.all().order_by('-created_at')
+    serializer_class = TaskResultSerializer
+    filterset_fields = ['task_name']
